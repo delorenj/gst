@@ -34,15 +34,15 @@ If you use GitHub Gists as a snippet manager, config backup, or code vault, you 
 
 1. Copy `gst` to a directory in your `$PATH`:
    ```sh
-   curl -o /usr/local/bin/gst https://raw.githubusercontent.com/delorenj/zshyzsh/main/gst
+   curl -o /usr/local/bin/gst https://raw.githubusercontent.com/delorenj/gst/main/bash/gst.sh
    chmod +x /usr/local/bin/gst
    ```
 2. Or clone this repo and symlink `gst`:
    ```sh
-   git clone https://github.com/delorenj/zshyzsh.git
-   cd zshyzsh
-   chmod +x gst
-   ln -s "$PWD/gst" ~/bin/gst  # or wherever is in your $PATH
+   git clone https://github.com/delorenj/gst.git
+   cd gst
+   chmod +x bash/gst.sh
+   ln -s "$PWD/bash/gst.sh" ~/bin/gst  # or wherever is in your $PATH
    ```
 
 ## Usage
