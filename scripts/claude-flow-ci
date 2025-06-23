@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+# Run claude-flow with environment fixes for TTY issues
+
+# Disable raw mode for Ink
+export CI=1  # This tells Ink to run in non-interactive mode
+export FORCE_COLOR=1  # Keep colors enabled
+
+# Alternative: use NO_COLOR if you don't need colors
+# export NO_COLOR=1
+
+# Run the original command
+exec ./claude-flow "$@"

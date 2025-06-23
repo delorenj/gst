@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+# Claude-Flow wrapper using nohup and background execution
+
+PROJECT_DIR="${PWD}"
+TIMESTAMP=$(date +%Y%m%d_%H%M%S)
+OUTPUT_FILE="${PROJECT_DIR}/claude-flow-output-${TIMESTAMP}.log"
+
+echo "Starting claude-flow in background mode..."
+echo "Output will be written to: ${OUTPUT_FILE}"
+echo ""
+
+# Change to project directory
+cd "${PROJECT_DIR}"
+
+# Run claude-flow with nohup in background, capturing all output
+nohup bash -c "claude-flow $* 2>&1" > "${OUTPUT_FILE}" 2>&1 &
+PID=$!
+
+echo "Process started with PID: ${PID}"
+echo "Monitoring output (press Ctrl+C to stop monitoring, process will continue)..."
+echo ""
+
+# Tail the output file
+tail -f "${OUTPUT_FILE}"

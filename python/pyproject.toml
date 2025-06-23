@@ -1,0 +1,7 @@
+[project]
+name = "gst"
+version = "0.1.0"
+description = "A Gist CLI for people who think every other Gist CLI sucks."
+readme = "README.md"
+dependencies = ["click"]
+requires-python = ">=3.12"

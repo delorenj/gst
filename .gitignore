@@ -1,0 +1,14 @@
+*.log
+__pycache__
+*.pyc
+*.o
+*.so
+*.a
+node_modules
+dist
+# python
+.eggs
+build
+gst.egg-info
+.claude-flow-history
+

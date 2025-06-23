@@ -1,0 +1,68 @@
+#!/usr/bin/env bash
+# Claude-Flow background wrapper with real-time output
+# This works because it doesn't try to fake a TTY, just redirects output
+
+PROJECT_DIR="${PWD}"
+TIMESTAMP=$(date +%Y%m%d_%H%M%S)
+OUTPUT_FILE="${PROJECT_DIR}/claude-flow-output-${TIMESTAMP}.log"
+PID_FILE="${PROJECT_DIR}/.claude-flow-${TIMESTAMP}.pid"
+
+# Function to cleanup on exit
+cleanup() {
+    if [[ -f "${PID_FILE}" ]]; then
+        PID=$(cat "${PID_FILE}")
+        if kill -0 "${PID}" 2>/dev/null; then
+            echo -e "\n\nStopping claude-flow process (PID: ${PID})..."
+            kill "${PID}"
+        fi
+        rm -f "${PID_FILE}"
+    fi
+}
+
+# Set trap for cleanup
+trap cleanup EXIT INT TERM
+
+echo "🚀 Starting claude-flow in background mode..."
+echo "📝 Output file: ${OUTPUT_FILE}"
+echo "⏳ This bypasses TTY requirements by running detached"
+echo ""
+
+# Change to project directory
+cd "${PROJECT_DIR}"
+
+# Start claude-flow in background, completely detached from TTY
+nohup bash -c "
+    export CI=1
+    export FORCE_COLOR=0
+    export NO_COLOR=1
+    claude-flow $* 2>&1
+" > "${OUTPUT_FILE}" 2>&1 &
+
+PID=$!
+echo "${PID}" > "${PID_FILE}"
+
+echo "✅ Process started with PID: ${PID}"
+echo "📊 Monitoring output (Ctrl+C to stop monitoring, process continues)..."
+echo "────────────────────────────────────────────────────────────"
+echo ""
+
+# Monitor the output file
+tail -f "${OUTPUT_FILE}" &
+TAIL_PID=$!
+
+# Wait for either the claude-flow process to finish or user interrupt
+wait "${PID}" 2>/dev/null
+EXIT_CODE=$?
+
+# Stop tail if it's still running
+kill "${TAIL_PID}" 2>/dev/null
+
+echo ""
+echo "────────────────────────────────────────────────────────────"
+echo "✅ Claude-flow completed with exit code: ${EXIT_CODE}"
+echo "📄 Full output saved to: ${OUTPUT_FILE}"
+
+# Cleanup PID file
+rm -f "${PID_FILE}"
+
+exit ${EXIT_CODE}

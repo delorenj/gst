@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+# Alternative approach using claude-code directly
+
+PROJECT_DIR="${PWD}"
+TASK="$*"
+
+# Create a prompt file for claude-code
+PROMPT_FILE="/tmp/claude-flow-prompt-$$.txt"
+
+cat > "${PROMPT_FILE}" << EOF
+Task: ${TASK}
+
+Please help me with this task. Work through it systematically and provide the implementation.
+EOF
+
+echo "Using claude-code directly to bypass claude-flow TTY issues..."
+echo "Task: ${TASK}"
+echo ""
+
+# Change to project directory
+cd "${PROJECT_DIR}"
+
+# Use claude-code with the task
+claude-code --task "${TASK}"
+
+# Clean up
+rm -f "${PROMPT_FILE}"

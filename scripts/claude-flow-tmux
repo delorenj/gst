@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+# Claude-Flow wrapper using tmux for proper TTY
+
+PROJECT_DIR="${PWD}"
+SESSION_NAME="claude-flow-$$"
+
+# Check if tmux is installed
+if ! command -v tmux &> /dev/null; then
+    echo "tmux is not installed. Trying screen instead..."
+    
+    if ! command -v screen &> /dev/null; then
+        echo "Neither tmux nor screen is installed."
+        echo "Please install one of them:"
+        echo "  sudo apt-get install tmux"
+        echo "  or"
+        echo "  sudo apt-get install screen"
+        exit 1
+    fi
+    
+    # Use screen
+    echo "Running claude-flow in screen session..."
+    cd "${PROJECT_DIR}"
+    exec screen -D -m claude-flow "$@"
+else
+    # Use tmux
+    echo "Running claude-flow in tmux session..."
+    cd "${PROJECT_DIR}"
+    
+    # Create a new tmux session and run claude-flow
+    tmux new-session -d -s "${SESSION_NAME}" -c "${PROJECT_DIR}" "claude-flow $*; read -p 'Press enter to close...'"
+    
+    # Attach to the session
+    tmux attach-session -t "${SESSION_NAME}"
+fi

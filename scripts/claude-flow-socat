@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+# Claude-Flow ultimate TTY fix
+# This script uses socat to create a proper PTY pair
+
+PROJECT_DIR="${PWD}"
+
+# Check if socat is installed
+if ! command -v socat &> /dev/null; then
+    echo "Installing socat for PTY support..."
+    if command -v apt-get &> /dev/null; then
+        sudo apt-get install -y socat
+    elif command -v yum &> /dev/null; then
+        sudo yum install -y socat
+    elif command -v brew &> /dev/null; then
+        brew install socat
+    else
+        echo "Please install socat manually"
+        exit 1
+    fi
+fi
+
+# Create a temporary script that will run claude-flow
+TEMP_SCRIPT="/tmp/claude-flow-runner-$$.sh"
+cat > "${TEMP_SCRIPT}" << 'EOF'
+#!/bin/bash
+cd "PROJECT_DIR_PLACEHOLDER"
+exec claude-flow "$@"
+EOF
+
+# Replace placeholder with actual directory
+sed -i "s|PROJECT_DIR_PLACEHOLDER|${PROJECT_DIR}|g" "${TEMP_SCRIPT}"
+chmod +x "${TEMP_SCRIPT}"
+
+# Run with socat to create proper PTY
+echo "Running claude-flow with PTY emulation..."
+socat -d -d pty,raw,echo=0 "exec:${TEMP_SCRIPT} $*,pty,raw,echo=0"
+
+# Clean up
+rm -f "${TEMP_SCRIPT}"

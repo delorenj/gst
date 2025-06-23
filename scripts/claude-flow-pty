@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+# Claude-Flow wrapper with multiple TTY workarounds
+
+# Get the current directory
+PROJECT_DIR="${PWD}"
+
+# Method 1: Try with unbuffer (if available)
+if command -v unbuffer &> /dev/null; then
+    echo "Using unbuffer to allocate TTY..."
+    cd "${PROJECT_DIR}"
+    exec unbuffer -p claude-flow "$@"
+fi
+
+# Method 2: Try with expect (if available)
+if command -v expect &> /dev/null; then
+    echo "Using expect to allocate TTY..."
+    cd "${PROJECT_DIR}"
+    exec expect -c "
+        set timeout -1
+        spawn claude-flow $argv
+        interact
+    " "$@"
+fi
+
+# Method 3: Use Python's pty module
+if command -v python3 &> /dev/null; then
+    echo "Using Python pty to allocate TTY..."
+    cd "${PROJECT_DIR}"
+    exec python3 -c "
+import pty
+import sys
+import os
+os.chdir('${PROJECT_DIR}')
+sys.exit(pty.spawn(['claude-flow'] + sys.argv[1:]))
+" "$@"
+fi
+
+# Method 4: Fallback to script
+echo "Using script to allocate TTY..."
+cd "${PROJECT_DIR}"
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    exec script -q /dev/null claude-flow "$@"
+else
+    exec script -qefc "claude-flow $*" /dev/null
+fi

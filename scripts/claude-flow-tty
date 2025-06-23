@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+# Claude-Flow TTY wrapper to fix raw mode issues
+
+# This wrapper ensures claude-flow runs with proper TTY allocation
+# even when called from scripts or non-interactive contexts
+
+# Get the directory where this script is located
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
+
+# Force TTY allocation using script command
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    # macOS
+    exec script -q /dev/null "${PROJECT_DIR}/claude-flow" "$@"
+else
+    # Linux
+    exec script -qefc "${PROJECT_DIR}/claude-flow $*" /dev/null
+fi

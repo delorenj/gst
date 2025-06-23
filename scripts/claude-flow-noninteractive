@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+# Claude-Flow wrapper with various TTY and environment workarounds
+
+# Get the current directory
+PROJECT_DIR="${PWD}"
+
+# Export various environment variables that might help
+export CLAUDE_WORKING_DIR="${PROJECT_DIR}"
+export PWD="${PROJECT_DIR}"
+
+# Try to disable interactive mode
+export CI=true
+export NONINTERACTIVE=1
+export DEBIAN_FRONTEND=noninteractive
+export NODE_NO_READLINE=1
+
+# Disable color and interactive features
+export NO_COLOR=1
+export TERM=dumb
+
+# Try to run with input from /dev/null to force non-interactive
+echo "Attempting to run claude-flow in non-interactive mode..."
+cd "${PROJECT_DIR}"
+
+# First, let's try a dry run to see if that works
+if [[ "$1" == "swarm" ]] && [[ "$*" != *"--dry-run"* ]]; then
+    echo "Adding --dry-run flag to test..."
+    claude-flow "$@" --dry-run
+    echo ""
+    echo "Dry run completed. Attempting actual run..."
+fi
+
+# Try running with input redirected from /dev/null
+claude-flow "$@" < /dev/null
