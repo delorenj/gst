@@ -1,7 +1,7 @@
 {
-  "name": "gst-cli",
-  "version": "1.0.0",
-  "description": "GitHub Gist Management Tool",
+  "name": "@delorenj/gst",
+  "version": "0.1.0",
+  "description": "🦑 A power tool for quickly fetching, copying, and saving files from your GitHub Gists",
   "bin": {
     "gst": "./bin/run"
   },
@@ -52,7 +52,23 @@
   "keywords": [
     "github",
     "gist",
-    "cli"
+    "cli",
+    "fzf",
+    "clipboard"
   ],
-  "types": "lib/index.d.ts"
+  "types": "lib/index.d.ts",
+  "author": "delorenj",
+  "license": "MIT",
+  "homepage": "https://github.com/delorenj/gst#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/delorenj/gst.git",
+    "directory": "typescript"
+  },
+  "bugs": {
+    "url": "https://github.com/delorenj/gst/issues"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  }
 }

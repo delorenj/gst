@@ -29,9 +29,16 @@ If you use GitHub Gists as a snippet manager, config backup, or code vault, you 
   - Linux: `wl-copy` (Wayland), `xclip` or `xsel` (X11)
   - macOS: `pbcopy`
   - Windows/WSL: `clip`
+- [pipx](https://pypa.github.io/pipx/) (for Python version installation)
 
-### Download
+### Installation Options
 
+#### Python Version (via pipx - Recommended)
+```sh
+pipx install git+https://github.com/delorenj/gst.git#subdirectory=python
+```
+
+#### Bash Version
 1. Copy `gst` to a directory in your `$PATH`:
    ```sh
    curl -o /usr/local/bin/gst https://raw.githubusercontent.com/delorenj/gst/main/bash/gst.sh

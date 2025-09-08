@@ -25,6 +25,7 @@ gst is a CLI tool that makes GitHub Gists as easy to use as local files. It prov
 ### Python Implementation (python/)
 - Uses uv for dependency management
 - Dependencies: click
+- Install with: `pipx install git+https://github.com/delorenj/gst.git#subdirectory=python`
 
 ## Project Structure
 
@@ -64,6 +65,7 @@ gst/
 - Use type hints where applicable
 - Use click for CLI interface
 - Target Python 3.12+
+- Use uv for package management
 
 ### Shell Scripts
 - Use shellcheck for validation

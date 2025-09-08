@@ -5,3 +5,12 @@ description = "A Gist CLI for people who think every other Gist CLI sucks."
 readme = "README.md"
 dependencies = ["click"]
 requires-python = ">=3.12"
+
+[project.scripts]
+gst = "gst:main"
+
+[tool.setuptools]
+py-modules = ["gst"]
+
+[tool.uv]
+package = true
